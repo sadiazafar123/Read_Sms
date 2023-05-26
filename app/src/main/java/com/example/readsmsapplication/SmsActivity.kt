@@ -15,6 +15,7 @@ class SmsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sms)
+        supportActionBar?.hide()
         recyclerView=findViewById(R.id.recyclerSms)
        // val intent = Intent()
         val threadListObj:ArrayList<UserInfo>?
