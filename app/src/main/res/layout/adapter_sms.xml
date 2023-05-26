@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/linearSmsAdapter"
+        android:padding="20dp">
+        <TextView
+            android:id="@+id/tvMessageReceived"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/received_msg_shape"
+            tools:text="Hey there, what are you trying to achieve with layout in xml"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:padding="10dp"
+            android:layout_marginEnd="40dp"
+            android:gravity="start"
+            android:layout_gravity="start"
+            android:visibility="visible"
+            android:textSize="16sp"
+            android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/tvDateReceved"
+            tools:text="00, Mar, 2023"
+            android:layout_gravity="start"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tvMessageSent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@drawable/send_msg_shape"
+            android:gravity="end"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:padding="10dp"
+            tools:text="Hey there, what are you trying to achieve with layout in xml"
+            android:layout_marginStart="40dp"
+            android:textSize="16sp"
+            android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/tvDateSent"
+            tools:text="00, Mar, 2023"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</layout>
