@@ -27,7 +27,7 @@ class ThreadAdapter(private val threadsList: ArrayList<ArrayList<UserInfo>>, var
        var data= threadsList[position].get(0)
         holder.tvContactNo.text = data.contact_no
         holder.tvTextMsg.text=data.textMsg
-        holder.tvDate.text = DateParcer.convertLongToTime(data.date.toLong())
+        holder.tvDate.text = DateParcer.convertLongToTime(data.date!!.toLong())
         if (data.textType.equals("1")){
         holder.ivType.setImageResource(R.drawable.ic_sms_received)
         }

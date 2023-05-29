@@ -35,14 +35,14 @@ class SmsAdapter( val threadListObj: ArrayList<UserInfo>):RecyclerView.Adapter<S
         //type 1 - Inbox, 2 - Sent
         if (threadListObj[position].textType=="1") {
             holder.binding.tvMessageReceived.text = threadListObj[position].textMsg
-            holder.binding.tvDateReceved.text = DateParcer.convertLongToTime(threadListObj[position].date.toLong())
+            holder.binding.tvDateReceved.text = DateParcer.convertLongToTime(threadListObj[position].date!!.toLong())
             holder.binding.tvMessageReceived.visible()
             holder.binding.tvDateReceved.visible()
             holder.binding.tvMessageSent.gone()
             holder.binding.tvDateSent.gone()
         }else{
             holder.binding.tvMessageSent.text = threadListObj[position].textMsg
-            holder.binding.tvDateSent.text = DateParcer.convertLongToTime(threadListObj[position].date.toLong())
+            holder.binding.tvDateSent.text = DateParcer.convertLongToTime(threadListObj[position].date!!.toLong())
             holder.binding.tvMessageSent.visible()
             holder.binding.tvMessageReceived.gone()
             holder.binding.tvDateReceved.gone()
