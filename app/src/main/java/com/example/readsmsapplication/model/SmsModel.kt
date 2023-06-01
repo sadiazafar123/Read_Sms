@@ -13,9 +13,10 @@ data class SmsModel(
 
 @Parcelize
 data class UserInfo(
-    val contact_no: String?,
-    val textMsg: String?,
-    val date: String?,
-    val textType: String?,
-    val threadId:Int?
+    val contact_no: String? = "",
+    val name:String? = "",
+    val textMsg: String? = "",
+    val date: String? = "",
+    val textType: String? = "",
+    val threadId:Int? = 0
 ) : Parcelable

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "863014767517",
+    "firebase_url": "https://readsmsapp-default-rtdb.firebaseio.com",
+    "project_id": "readsmsapp",
+    "storage_bucket": "readsmsapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:863014767517:android:6c7d5df340f413177abd74",
+        "android_client_info": {
+          "package_name": "com.example.readsmsapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6XyX5MV-DbFsMKnx35JpejRmNV63zIro"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

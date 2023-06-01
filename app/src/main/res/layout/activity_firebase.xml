@@ -5,23 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".FirebaseActivity">
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerViewFirebase"
         android:layout_width="match_parent"
         tools:itemCount="3"
         android:layout_height="wrap_content"
         tools:listitem="@layout/thread_itemview"/>
-    <androidx.appcompat.widget.AppCompatButton
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/btnUpload"
-        android:layout_width="170dp"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
-        android:text="upload"
-        android:textColor="@color/white"
-        android:background="@drawable/upload_btn_shape"/>
 
 </RelativeLayout>

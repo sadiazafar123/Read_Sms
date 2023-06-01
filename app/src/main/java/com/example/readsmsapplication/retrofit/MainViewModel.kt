@@ -5,6 +5,7 @@ import android.provider.Telephony
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.SortedList
 import com.example.readsmsapplication.model.UserInfo
 import retrofit2.Call
 import retrofit2.Callback
@@ -120,11 +121,11 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         val smsCol = Telephony.TextBasedSmsColumns.BODY
         val typeCol = Telephony.TextBasedSmsColumns.TYPE // 1 - Inbox, 2 - Sent
         val smsDate = Telephony.TextBasedSmsColumns.DATE
-        val projection = arrayOf(numberCol, nameCol, smsCol, typeCol, smsDate, threadCol)
+        val projection = arrayOf(numberCol, nameCol, smsCol,smsDate, typeCol, threadCol)
 
         val cursor = context.contentResolver.query(
             Telephony.Sms.CONTENT_URI,
-            projection, null, null, null
+            projection, null, null,null
         )
 
         val numberColIdx = cursor!!.getColumnIndex(numberCol)
@@ -141,10 +142,10 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
             val type = cursor.getString(typeColIdx)
             val date = cursor.getString(typeColDate)
             val threadId = cursor.getInt(typeColThreadId)
-            val userInfo = UserInfo(number, text, date, type, threadId)
+            val userInfo = UserInfo(number,name, text, date, type, threadId)
             smsInfoList.add(userInfo)
 
-            Log.d("MY_APP", "$number $text $type $name")
+//            Log.d("MY_APP", "$text $type $name")
         }
 
         cursor.close()

