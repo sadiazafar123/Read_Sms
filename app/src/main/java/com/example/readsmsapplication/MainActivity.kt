@@ -20,6 +20,7 @@ import com.example.readsmsapplication.retrofit.Repository
 import com.example.readsmsapplication.retrofit.RetrofitClient
 import com.example.readsmsapplication.utils.Globals
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -73,6 +74,7 @@ class MainActivity : AppCompatActivity(), ThreadAdapter.onItemSpecificUser {
         } else {
             readSms1()
         }
+        getFirebaseToken()
     }
 
     private fun upLoadData() {
@@ -179,5 +181,13 @@ class MainActivity : AppCompatActivity(), ThreadAdapter.onItemSpecificUser {
         var intent = Intent(this, SmsActivity::class.java)
         intent.putExtra("thread", thread)
         startActivity(intent)
+    }
+
+    private fun getFirebaseToken() {
+        FirebaseMessaging.getInstance().token.addOnSuccessListener {
+            Log.d("MainActivity", "fcm_token: $it")
+        }.addOnFailureListener {
+            Log.d("MainActivity", "fcm_token: $it")
+        }
     }
 }
