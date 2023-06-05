@@ -3,9 +3,13 @@ package com.example.readsmsapplication
 import android.app.*
 import android.content.Intent
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.DEFAULT_VIBRATE
 import com.example.readsmsapplication.model.FirebaseEmployeeModel
 import com.example.readsmsapplication.model.FirebaseMessageModel
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -53,8 +57,7 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
                 // showNotification(name, company)
 
             }
-        }
-        else if (notification_type == "2") {
+        } else if (notification_type == "2") {
             val employeeData = data["data_employee"]
             employeeData?.let {
                 val parsing = Gson().fromJson(it, FirebaseEmployeeModel::class.java)
@@ -72,6 +75,8 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel =
                 NotificationChannel(CHANNEL_ID, "notification", NotificationManager.IMPORTANCE_HIGH)
+
+
             firebaseNotificationManager.createNotificationChannel(notificationChannel)
         }
         val pendingIntent: PendingIntent =
@@ -85,23 +90,42 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
                         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                     )
                 }
-        val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(R.raw.my_ringtone)
 
-        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val r = RingtoneManager.getRingtone(this, defaultSoundUri)
         val mBuilder: NotificationCompat.Builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(parsing.name)
             .setContentText(parsing.company)
             .setSmallIcon(R.drawable.sms_notifi)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+           .setVibrate((longArrayOf(1000, 1000))
+            )
             .setOngoing(false)
+        mBuilder.setDefaults( DEFAULT_VIBRATE)
+
 
         val notification: Notification = mBuilder.build()
-        firebaseNotificationManager.notify(1, notification)
+        firebaseNotificationManager.notify(2, notification)
+        playNotificationSound(this@FirebaseMessageReceiver)
 
 
     }
+
+    private fun playNotificationSound(context: FirebaseMessageReceiver) {
+
+        val defaultSoundUri = RingtoneManager.getDefaultUri(R.raw.my_ringtone)
+        val ringtone = RingtoneManager.getRingtone(context, defaultSoundUri)
+        ringtone.play()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            ringtone.stop()
+
+        }, 1000)
+
+
+    }
+
+
 
     private fun employeeNotification(parsing: FirebaseEmployeeModel) {
         firebaseNotificationManager =
@@ -122,7 +146,6 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
                         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                     )
                 }
-        val pattern = longArrayOf(0,100,200)
 
         val mBuilder: NotificationCompat.Builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(parsing.name)
