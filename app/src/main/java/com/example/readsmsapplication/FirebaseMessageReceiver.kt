@@ -17,6 +17,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 
 class FirebaseMessageReceiver : FirebaseMessagingService() {
+    ///ctrl+o press and override two method 1(onNewToken),2(onMessageReceived)
     lateinit var firebaseNotificationManager: NotificationManager
     val CHANNEL_ID = "notification_channel"
 
